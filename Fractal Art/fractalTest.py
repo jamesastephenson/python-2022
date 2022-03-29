@@ -6,14 +6,14 @@ from turtle import *
 shape("turtle")
 
 # speed accepts 1-10, 1 is slowest, 10 and 0 are fastest
-speed(3)
+speed(5)
 
 # defining a fractal tree using recursion
   # we need to go back with recursion to draw each branch
 def tree(size, levels, angle):
     # base case: telling us when to stop (prevent infinite loop)
     if levels == 0:
-        color("green")
+        color("blue")
         # dot function will make a dot with a radius of the argument var (size)
             # REMEMEBER: this appears when our base case is hit
         dot(size)
@@ -41,7 +41,7 @@ def tree(size, levels, angle):
 
 # turning it 90 deg for start pos 
 left(90)
-tree(100, 6, 30)
+tree(100, 6, 45)
 
 # mainloop() function prevents turtle from closing instantly
 mainloop()
