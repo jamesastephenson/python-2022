@@ -43,6 +43,10 @@ opponent = pygame.Rect(10, screenHeight/2 - 70, 10, 140)
 bgColor = pygame.Color('grey12')
 lightGrey = (200, 200, 200)
 
+# define horizontal and vertical speed for ball
+ballSpeedX = 17
+ballSpeedY = 17
+
 # Loop Section
 while True:
     # handle input
@@ -54,6 +58,17 @@ while True:
             # these two combined reliably close the game
             pygame.quit()  # uninitializes Python module
             sys.exit()  # closes the window
+    
+    # we want the ball to move every frame by the ball speed we've defined
+    ball.x += ballSpeedX
+    ball.y += ballSpeedY
+
+    # collissions with ends of screen
+        # <= and >= are more useful than == here because px movement each cycle may not be strictly equal
+    if ball.top <= 0 or ball.bottom >= screenHeight:
+        ballSpeedY *= -1
+    if ball.left <= 0 or ball.right >= screenWidth:
+        ballSpeedX *= -1
 
     # Visuals
         # note: these render in order, if you put screen.fill() at the bottom it's all you'd see
