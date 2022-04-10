@@ -5,6 +5,46 @@ import pygame, sys
     # Loop section (continually drawing and updating what's onscreen)
 # sys is being used to close the game here
 
+# function for our ball speed and collisions
+    # was previously this block in the main loop, but easier to contain in function
+def ballAnimation():
+    # account for global scope (this is only a good solution in small programs)
+        # better to use return statements or classes
+    global ballSpeedX, ballSpeedY
+
+    # we want the ball to move every frame by the ball speed we've defined
+    ball.x += ballSpeedX
+    ball.y += ballSpeedY
+
+    # collissions with ends of screen
+        # <= and >= are more useful than == here because px movement each cycle may not be strictly equal
+    if ball.top <= 0 or ball.bottom >= screenHeight:
+        ballSpeedY *= -1
+    if ball.left <= 0 or ball.right >= screenWidth:
+        ballSpeedX *= -1
+
+    # rect1.colliderect(rect2) - if they collide, it returns true
+    if ball.colliderect(player) or ball.colliderect(opponent):
+        ballSpeedX *= -1
+
+def playerAnimation():
+    player.y += playerSpeed
+    if player.top <=0:
+        player.top = 0
+    if player.bottom >= screenHeight:
+        player.bottom = screenHeight
+
+def opponentAnimation():
+    if opponent.top < ball.y:
+        opponent.top += opponentSpeed
+    if opponent.bottom > ball.y:
+        opponent.bottom -= opponentSpeed
+
+    if opponent.top <=0:
+        opponent.top = 0
+    if opponent.bottom >= screenHeight:
+        opponent.bottom = screenHeight
+        
 # init() initiates all pygame modules (required for all pygame uses)
 pygame.init()
 # storing clock method in a variable
@@ -46,6 +86,8 @@ lightGrey = (200, 200, 200)
 # define horizontal and vertical speed for ball
 ballSpeedX = 17
 ballSpeedY = 17
+playerSpeed = 0
+opponentSpeed = 7
 
 # Loop Section
 while True:
@@ -58,17 +100,27 @@ while True:
             # these two combined reliably close the game
             pygame.quit()  # uninitializes Python module
             sys.exit()  # closes the window
+        # pygame.KEYDOWN only checks if a key has been pressed, we need another if for specific keys
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_DOWN: # down arrow key
+                # decalre player speed variable
+                # add this speed to the player on every frame
+                # no button pressed: speed = 0
+                # button pressed: speed becomes positive or negative
+                playerSpeed += 7
+            if event.key == pygame.K_UP:
+                playerSpeed -= 7
+        if event.type == pygame.K_UP:
+            if event.key == pygame.K_DOWN:
+                playerSpeed -= 7
+            if event.key == pygame.K_UP:
+                playerSpeed += 7
     
-    # we want the ball to move every frame by the ball speed we've defined
-    ball.x += ballSpeedX
-    ball.y += ballSpeedY
+    ballAnimation()
+    playerAnimation()
+    opponentAnimation() 
 
-    # collissions with ends of screen
-        # <= and >= are more useful than == here because px movement each cycle may not be strictly equal
-    if ball.top <= 0 or ball.bottom >= screenHeight:
-        ballSpeedY *= -1
-    if ball.left <= 0 or ball.right >= screenWidth:
-        ballSpeedX *= -1
+    
 
     # Visuals
         # note: these render in order, if you put screen.fill() at the bottom it's all you'd see
