@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, random
 
 # PyGame primarily has  2 sections 
     # Setup section (game logic and data) and a 
@@ -6,7 +6,6 @@ import pygame, sys
 # sys is being used to close the game here
 
 # function for our ball speed and collisions
-    # was previously this block in the main loop, but easier to contain in function
 def ballAnimation():
     # account for global scope (this is only a good solution in small programs)
         # better to use return statements or classes
@@ -21,7 +20,7 @@ def ballAnimation():
     if ball.top <= 0 or ball.bottom >= screenHeight:
         ballSpeedY *= -1
     if ball.left <= 0 or ball.right >= screenWidth:
-        ballSpeedX *= -1
+        ballRestart()
 
     # rect1.colliderect(rect2) - if they collide, it returns true
     if ball.colliderect(player) or ball.colliderect(opponent):
@@ -44,6 +43,15 @@ def opponentAnimation():
         opponent.top = 0
     if opponent.bottom >= screenHeight:
         opponent.bottom = screenHeight
+
+# reset ball position after player scores
+def ballRestart():
+    global ballSpeedX, ballSpeedY
+    ball.center = (screenWidth / 2, screenHeight / 2)
+    # random.choice returns a random value from the tuple passed into it
+        # randomizes direction
+    ballSpeedY *= random.choice((1,-1))
+    ballSpeedX *= random.choice((1,-1))
         
 # init() initiates all pygame modules (required for all pygame uses)
 pygame.init()
@@ -84,10 +92,10 @@ bgColor = pygame.Color('grey12')
 lightGrey = (200, 200, 200)
 
 # define horizontal and vertical speed for ball
-ballSpeedX = 17
-ballSpeedY = 17
+ballSpeedX = 15 * random.choice((1,-1))
+ballSpeedY = 15 * random.choice((1,-1))
 playerSpeed = 0
-opponentSpeed = 7
+opponentSpeed = 11
 
 # Loop Section
 while True:
